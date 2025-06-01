@@ -1,0 +1,89 @@
+/*
+ * Rofi Nord Theme - Transparent Style with Icons
+ */
+
+* {
+    background-color: #2e344080;
+    foreground-color: #d8dee9;
+    selected-normal-background: #81a1c1cc;
+    selected-normal-foreground: #2e3440;
+    alternate-normal-background: #3b425260;
+    border-color: #4c566a80;
+    separatorcolor: #4c566a60;
+    font: "JetBrainsMono Nerd Font 12";
+}
+
+window {
+    location: center;
+    width: 600px;
+    background-color: rgba(46, 52, 64, 0.9);
+    border: 2px solid;
+    border-color: @border-color;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+mainbox {
+    spacing: 0px;
+    padding: 0px;
+    background-color: transparent;
+    children: [inputbar, listview];
+}
+
+inputbar {
+    spacing: 4px;
+    padding: 8px;
+    background-color: rgba(59, 66, 82, 0.6);
+    border-radius: 6px;
+    margin: 0px 0px 8px 0px;
+    children: [prompt, entry];
+}
+
+prompt {
+    padding: 4px 8px;
+    background-color: rgba(129, 161, 193, 0.8);
+    text-color: @selected-normal-foreground;
+    border-radius: 4px;
+}
+
+entry {
+    padding: 4px 8px;
+    background-color: transparent;
+    text-color: @foreground-color;
+    placeholder: "Search...";
+}
+
+listview {
+    lines: 8;
+    columns: 1;
+    scrollbar: false;
+    spacing: 2px;
+    background-color: transparent;
+}
+
+element {
+    padding: 8px 12px;
+    border-radius: 4px;
+    background-color: transparent;
+    text-color: @foreground-color;
+    spacing: 12px;
+}
+
+element selected {
+    background-color: rgba(129, 161, 193, 0.3);
+    text-color: @foreground-color;
+    border-radius: 6px;
+}
+
+element-icon {
+    size: 24px;
+    background-color: transparent;
+    vertical-align: 0.5;
+    margin: 0 8px 0 0;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    vertical-align: 0.5;
+}
