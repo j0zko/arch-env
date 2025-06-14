@@ -10,6 +10,14 @@ TOP_LEVEL_COMPONENTS=(rofi dunst)
 HYPRLAND_TOOLS=(hyprlock hypridle hyprpaper hyprshot)
 WAYBAR_DIR="$HOME/.config/waybar"
 
+# Check for required commands
+for cmd in git makepkg sudo; do
+    if ! command -v "$cmd" &>/dev/null; then
+        echo "❌ Required tool '$cmd' is missing. Please install it with: sudo pacman -S $cmd"
+        exit 1
+    fi
+done
+
 echo "📥 Cloning your repo..."
 git clone "$REPO_URL" "$CLONE_DIR" || { echo "❌ Repo clone failed"; exit 1; }
 
@@ -50,7 +58,7 @@ install_package() {
 echo "🛠️ Installing yay and paru if needed..."
 install_aur_helpers
 
-ALL_COMPONENTS=(rofi waybar dunst hyprlock hypridle hyprpaper hyprshot)
+ALL_COMPONENTS=("${TOP_LEVEL_COMPONENTS[@]}" "waybar" "${HYPRLAND_TOOLS[@]}")
 echo "📦 Installing required components..."
 for pkg in "${ALL_COMPONENTS[@]}"; do
     install_package "$pkg"
@@ -59,14 +67,17 @@ done
 mkdir -p "$HOME/.config"
 
 echo "🔧 Setting up top-level configs: rofi, dunst"
+shopt -s nullglob
 for comp in "${TOP_LEVEL_COMPONENTS[@]}"; do
     CONFIG_PATH="$HOME/.config/$comp"
-    echo "📁 Setting up $CONFIG_PATH"
     mkdir -p "$CONFIG_PATH"
     if [ -d "$CLONE_DIR/$comp" ]; then
-        ln -sf "$CLONE_DIR/$comp/"* "$CONFIG_PATH/"
+        for file in "$CLONE_DIR/$comp/"*; do
+            ln -sf "$file" "$CONFIG_PATH/"
+        done
     fi
 done
+shopt -u nullglob
 
 echo "🔧 Setting up hyprland tools configs..."
 for tool in "${HYPRLAND_TOOLS[@]}"; do
@@ -74,17 +85,19 @@ for tool in "${HYPRLAND_TOOLS[@]}"; do
     REPO_PATH="$CLONE_DIR/hyprland/$tool"
     mkdir -p "$TOOL_PATH"
     if [ -d "$REPO_PATH" ]; then
-        ln -sf "$REPO_PATH/"* "$TOOL_PATH/"
+        for file in "$REPO_PATH/"*; do
+            ln -sf "$file" "$TOOL_PATH/"
+        done
     fi
 done
 
 echo "🛠️ Creating waybar directory and adding config files..."
 mkdir -p "$WAYBAR_DIR"
 if [ -f "$CLONE_DIR/config.jsonc.txt" ]; then
-    mv "$CLONE_DIR/config.jsonc.txt" "$WAYBAR_DIR/config.jsonc"
+    cp "$CLONE_DIR/config.jsonc.txt" "$WAYBAR_DIR/config.jsonc"
 fi
 if [ -f "$CLONE_DIR/style.css.txt" ]; then
-    mv "$CLONE_DIR/style.css.txt" "$WAYBAR_DIR/style.css"
+    cp "$CLONE_DIR/style.css.txt" "$WAYBAR_DIR/style.css"
 fi
 
 echo "👤 Creating personal directory: $PERSONAL_DIR"
